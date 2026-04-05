@@ -27,7 +27,7 @@
 
 /* ── Reset ── */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-html { scroll-behavior: smooth; overscroll-behavior: none; }
+html { scroll-behavior: smooth; overscroll-behavior: none; } /* Fix Firefox overscroll */
 
 body {
   font-family: var(--sans);
@@ -35,7 +35,7 @@ body {
   color: var(--text);
   min-height: 100vh;
   overflow-x: hidden;
-  overscroll-behavior: none;
+  overscroll-behavior: none; /* Fix: prevent Firefox navbar pull-down on overscroll */
 }
 
 /* ── Background grid ── */
@@ -187,10 +187,134 @@ body::after {
   grid-template-columns: 380px 1fr;
   gap: 20px;
 }
+
+/* ── Hamburger button ── */
+.nav-mobile-right {
+  display: none;
+  align-items: center;
+  gap: 10px;
+}
+
+.nav-active-label {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--cyan);
+  font-family: var(--sans);
+}
+
+.hamburger {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 5px;
+  width: 36px;
+  height: 36px;
+  padding: 6px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: border-color 0.2s;
+  flex-shrink: 0;
+}
+.hamburger:hover { border-color: var(--cyan-dim); }
+.hamburger span {
+  display: block;
+  height: 2px;
+  background: var(--text);
+  border-radius: 2px;
+  transition: all 0.25s;
+  transform-origin: center;
+}
+.hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+.hamburger.open span:nth-child(2) { opacity: 0; transform: scaleX(0); }
+.hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+/* ── Mobile dropdown ── */
+.nav-dropdown {
+  position: absolute;
+  top: 60px;
+  left: 0;
+  right: 0;
+  background: rgba(8, 13, 26, 0.97);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  z-index: 99;
+  animation: fadeSlideIn 0.2s ease;
+}
+.nav-dropdown-item {
+  padding: 15px 20px;
+  background: none;
+  border: none;
+  border-bottom: 1px solid var(--border);
+  color: var(--text-2);
+  font-family: var(--sans);
+  font-size: 14px;
+  font-weight: 500;
+  text-align: left;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.nav-dropdown-item:last-child { border-bottom: none; }
+.nav-dropdown-item:hover { background: var(--card); color: var(--text); }
+.nav-dropdown-item.active {
+  color: var(--cyan);
+  background: var(--cyan-glow);
+}
+
+/* ── Responsive breakpoints ── */
 @media (max-width: 860px) {
+  /* Nav */
+  .nav { padding: 0 16px; position: relative; flex-wrap: wrap; }
+  .nav-tabs-desktop { display: none; }
+  .nav-mobile-right { display: flex; }
+
+  /* Layout */
+  .main-container { padding: 24px 16px 60px; }
   .calc-grid { grid-template-columns: 1fr; }
-  .nav { padding: 0 16px; }
-  .nav-tab { padding: 6px 10px; font-size: 12px; }
+
+  /* Page header */
+  .page-header h1 { font-size: 22px; }
+
+  /* Cards */
+  .card { padding: 18px 16px; }
+
+  /* Split controls stack vertically */
+  .split-controls { flex-direction: column; align-items: stretch; }
+  .form-input { width: 100% !important; }
+  .btn-primary { width: 100%; }
+
+  /* Binary visualizer - allow wrap */
+  .bin-display { gap: 3px; }
+  .bin-octet { margin-right: 4px; }
+  .bin-bit { width: 16px; height: 24px; font-size: 11px; }
+
+  /* Result grid single column on very small screens */
+  .result-grid { grid-template-columns: 1fr; }
+  .result-item.full { grid-column: 1; }
+
+  /* Tables horizontal scroll */
+  .subnet-table, .cheat-table { font-size: 12px; }
+  .subnet-table thead th, .cheat-table thead th { padding: 8px 10px; font-size: 9px; }
+  .subnet-table tbody td, .cheat-table td { padding: 10px 10px; }
+
+  /* Presets wrap nicely */
+  .presets { gap: 6px; }
+
+  /* Copy toast position */
+  .copy-toast { bottom: 16px; right: 16px; }
+
+  /* Footer */
+  .footer { padding: 16px; font-size: 12px; }
+}
+
+@media (max-width: 480px) {
+  .bin-bit { width: 14px; height: 22px; font-size: 10px; border-radius: 3px; }
+  .bin-octet { margin-right: 3px; }
+  .result-host-count { font-size: 18px; }
+  .page-header h1 { font-size: 20px; }
 }
 
 /* ── Inputs ── */
